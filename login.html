@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - EduCore</title>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="login-page">
+
+<div class="login-box">
+
+<h1>EduCore Login</h1>
+<p>Select your role and login</p>
+
+<!-- ROLE SELECT -->
+<select id="role">
+<option value="student">Student</option>
+<option value="parent">Parent</option>
+<option value="teacher">Teacher</option>
+<option value="staff">Staff</option>
+</select>
+
+<!-- INPUTS -->
+<input type="text" id="username" placeholder="Enter Username">
+<input type="password" id="password" placeholder="Enter Password">
+
+<!-- LOGIN BUTTON -->
+<button onclick="login()">Login</button>
+
+<p style="opacity:0.7;margin-top:10px;">
+Demo Password: <b>1234</b>
+</p>
+
+</div>
+
+</div>
+
+<!-- LOGIN SCRIPT -->
+<script>
+function login(){
+
+let role = document.getElementById("role").value;
+let username = document.getElementById("username").value.trim();
+let password = document.getElementById("password").value.trim();
+
+if(username === ""){
+alert("Enter username");
+return;
+}
+
+if(password !== "1234"){
+alert("Wrong password");
+return;
+}
+
+// SAVE LOGIN DATA
+localStorage.setItem("role", role);
+localStorage.setItem("username", username);
+
+// GO TO DASHBOARD
+window.location.href = "dashboard.html";
+}
+</script>
+
+</body>
+</html>
