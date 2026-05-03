@@ -1,245 +1,188 @@
-// =======================
-// INIT
-// =======================
+let role = localStorage.getItem("role") || "";
+let username = localStorage.getItem("username") || "";
+let userClass = localStorage.getItem("class") || "";
+let section = localStorage.getItem("section") || "";
 
-let role = localStorage.getItem("role");
-let username = localStorage.getItem("username");
+let key = role === "admin"
+? "ALL_DATA"
+: "CLASS_" + userClass + "_" + section;
 
-// show role on dashboard
-if(document.getElementById("roleText")){
-document.getElementById("roleText").innerText =
-"Role: " + role;
-}
-
-// default class
-let currentClass = "1-A";
-
-// class change
-let classSelect = document.getElementById("classSelect");
-
-if(classSelect){
-classSelect.addEventListener("change",(e)=>{
-currentClass = e.target.value;
-renderAll();
-});
-}
-
-// =======================
-// PERMISSION SYSTEM
-// =======================
-
-function canEdit(){
-return role === "teacher" || role === "staff";
-}
-
-// =======================
-// DASHBOARD STATS
-// =======================
-
-function updateStats(){
-
-let data = schoolData[currentClass] || {
+let data = JSON.parse(localStorage.getItem(key)) || {
 attendance: [],
 marks: [],
-messages: [],
-posts: []
+posts: [],
+complaints: []
 };
 
-document.getElementById("studentsCount").innerText =
-data.attendance.length;
+/* INIT */
+window.onload = function () {
 
-document.getElementById("messageCount").innerText =
-data.messages.length;
+let info = role === "admin"
+? "Role: Admin"
+: "Role: " + role + " | Class " + userClass + "-" + section;
 
-document.getElementById("postCount").innerText =
-data.posts.length;
-}
+document.getElementById("userInfo").innerText = info;
 
-// =======================
-// SHOW PAGE
-// =======================
+renderAll();
+lockUI();
+};
 
+/* PAGE SWITCH */
 function showPage(id){
-
 document.querySelectorAll(".page").forEach(p=>{
 p.classList.remove("active");
 });
-
 document.getElementById(id).classList.add("active");
 }
 
-// =======================
-// ATTENDANCE
-// =======================
-
-function saveAttendance(){
-
-if(!canEdit()){
-alert("Only teacher/staff can edit attendance");
-return;
-}
-
-let name = document.getElementById("studentName").value;
-let val = document.getElementById("studentAttendance").value;
-
-if(!name || !val){
-alert("Fill all fields");
-return;
-}
-
-initClass(currentClass);
-
-schoolData[currentClass].attendance.push({
-name:name,
-value:val
-});
-
-saveAll();
+/* SAVE */
+function saveData(){
+localStorage.setItem(key, JSON.stringify(data));
 renderAll();
 }
 
-// =======================
-// MARKS
-// =======================
+/* LOCK UI */
+function lockUI(){
 
-function saveMarks(){
-
-if(!canEdit()){
-alert("Only teacher/staff can edit marks");
-return;
+if(role === "student"){
+document.querySelectorAll(".action").forEach(x=>{
+x.style.display = "none";
+});
 }
 
-let name = document.getElementById("markName").value;
-let val = document.getElementById("markValue").value;
-
-if(!name || !val){
-alert("Fill all fields");
-return;
-}
-
-initClass(currentClass);
-
-schoolData[currentClass].marks.push({
-name:name,
-value:val
+if(role === "parent"){
+document.querySelectorAll(".action").forEach(x=>{
+x.style.display = "none";
 });
 
-saveAll();
-renderAll();
+let btns = document.querySelectorAll(".action");
+if(btns[3]) btns[3].style.display = "block";
+}
 }
 
-// =======================
-// MESSAGES
-// =======================
-
-function sendMessage(){
-
-let msg = document.getElementById("msgText").value;
-
-if(!msg){
-alert("Write message");
-return;
-}
-
-initClass(currentClass);
-
-schoolData[currentClass].messages.push({
-user:username,
-text:msg
-});
-
-saveAll();
-renderAll();
-}
-
-// =======================
-// POSTS
-// =======================
-
-function addPost(){
-
-let post = document.getElementById("postText").value;
-
-if(!post){
-alert("Write post");
-return;
-}
-
-initClass(currentClass);
-
-schoolData[currentClass].posts.push({
-user:username,
-text:post
-});
-
-saveAll();
-renderAll();
-}
-
-// =======================
-// RENDER ALL
-// =======================
-
+/* DASHBOARD */
 function renderAll(){
 
-let data = schoolData[currentClass];
+document.getElementById("studentCount").innerText =
+data.attendance.length;
 
-if(!data) return;
+document.getElementById("postCount").innerText =
+data.posts.length;
 
-// ATTENDANCE
-let aBox = document.getElementById("attendanceList");
-if(aBox){
-aBox.innerHTML = data.attendance.map(x=>
+document.getElementById("complaintCount").innerText =
+data.complaints.length;
+
+/* Attendance */
+document.getElementById("attendanceList").innerHTML =
+data.attendance.map(x =>
 `<div class="item">${x.name} - ${x.value}%</div>`
 ).join("");
-}
 
-// MARKS
-let mBox = document.getElementById("marksList");
-if(mBox){
-mBox.innerHTML = data.marks.map(x=>
-`<div class="item">${x.name} - ${x.value}</div>`
+/* Marks */
+document.getElementById("marksList").innerHTML =
+data.marks.map(x =>
+`<div class="item">${x.exam} | ${x.name} - ${x.value}</div>`
 ).join("");
-}
 
-// MESSAGES
-let msgBox = document.getElementById("msgList");
-if(msgBox){
-msgBox.innerHTML = data.messages.map(x=>
+/* Posts */
+document.getElementById("postList").innerHTML =
+data.posts.map(x =>
+`<div class="item"><b>${x.user}:</b> ${x.text}</div>`
+).join("");
+
+/* Complaints */
+document.getElementById("complaintList").innerHTML =
+data.complaints.map(x =>
 `<div class="item"><b>${x.user}:</b> ${x.text}</div>`
 ).join("");
 }
 
-// POSTS
-let pBox = document.getElementById("postList");
-if(pBox){
-pBox.innerHTML = data.posts.map(x=>
-`<div class="item"><b>${x.user}:</b> ${x.text}</div>`
-).join("");
+/* Attendance */
+function saveAttendance(){
+
+let name = document.getElementById("attName").value;
+let value = document.getElementById("attValue").value;
+
+if(name==="" || value===""){
+alert("Fill fields");
+return;
 }
 
-// STATS
-updateStats();
-
-// LOCK UI (view only for students/parents)
-if(role === "student" || role === "parent"){
-document.querySelectorAll("button.action").forEach(b=>{
-b.style.display = "none";
+data.attendance.push({
+name:name,
+value:value
 });
-}
+
+saveData();
 }
 
-// =======================
-// LOGOUT
-// =======================
+/* Marks */
+function saveMarks(){
 
+let exam = document.getElementById("examType").value;
+let name = document.getElementById("markName").value;
+let value = document.getElementById("markValue").value;
+
+if(name==="" || value===""){
+alert("Fill fields");
+return;
+}
+
+data.marks.push({
+exam:exam,
+name:name,
+value:value
+});
+
+saveData();
+}
+
+/* Community */
+function addPost(){
+
+let text = document.getElementById("postText").value;
+
+if(text===""){
+alert("Write something");
+return;
+}
+
+data.posts.push({
+user:username,
+text:text
+});
+
+saveData();
+}
+
+/* Complaints */
+function saveComplaint(){
+
+if(role !== "parent"){
+alert("Only parents can submit complaints");
+return;
+}
+
+let text = document.getElementById("complaintText").value;
+
+if(text===""){
+alert("Write complaint");
+return;
+}
+
+data.complaints.push({
+user:username,
+text:text
+});
+
+saveData();
+}
+
+/* Logout */
 function logout(){
-localStorage.clear();
+localStorage.removeItem("role");
+localStorage.removeItem("username");
+localStorage.removeItem("class");
+localStorage.removeItem("section");
 window.location.href = "login.html";
 }
-
-// =======================
-// INIT RUN
-// =======================
-
-renderAll();

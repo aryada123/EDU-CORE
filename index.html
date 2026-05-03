@@ -6,46 +6,68 @@
 <title>EduCore School System</title>
 
 <style>
-body{
+*{
 margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, sans-serif;
+}
+
+body{
 height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-font-family:Arial;
 background:linear-gradient(135deg,#0f172a,#1e293b,#312e81);
-color:white;
-text-align:center;
+color:#fff;
 }
 
 .box{
+width:90%;
+max-width:500px;
+padding:45px;
+text-align:center;
+border-radius:22px;
 background:rgba(255,255,255,0.08);
-padding:40px;
-border-radius:20px;
-box-shadow:0 15px 35px rgba(0,0,0,0.3);
+backdrop-filter:blur(14px);
+box-shadow:0 20px 50px rgba(0,0,0,0.35);
 }
 
 h1{
-font-size:40px;
+font-size:46px;
 margin-bottom:10px;
+color:#22c55e;
 }
 
 p{
-opacity:0.8;
-margin-bottom:20px;
+opacity:.85;
+font-size:18px;
+margin-bottom:30px;
 }
 
 button{
-padding:14px 28px;
-border:none;
-border-radius:12px;
-background:#22c55e;
+padding:15px 35px;
 font-size:18px;
 font-weight:bold;
+border:none;
+border-radius:14px;
 cursor:pointer;
+background:#22c55e;
+color:#fff;
+transition:.3s;
+}
+
+button:hover{
+background:#16a34a;
+transform:translateY(-2px);
+}
+
+.small{
+margin-top:18px;
+font-size:14px;
+opacity:.65;
 }
 </style>
-
 </head>
 
 <body>
@@ -54,12 +76,16 @@ cursor:pointer;
 <h1>EduCore</h1>
 <p>Smart School Management System</p>
 
-<button onclick="start()">Enter Portal</button>
+<button onclick="goLogin()">Enter Portal</button>
+
+<div class="small">
+Admin • Teacher • Parent • Student
+</div>
 </div>
 
 <script>
-function start(){
-window.location.href = "login.html";
+function goLogin(){
+window.location.href="login.html";
 }
 </script>
 

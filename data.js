@@ -1,125 +1,90 @@
-// =======================
-// SCHOOL DATA (CLASS WISE)
-// =======================
+/* EduCore Data System */
 
-let schoolData = JSON.parse(localStorage.getItem("schoolData")) || {};
-
-// current class will come from dashboard
-let currentClass = "1-A";
-
-// =======================
-// INIT CLASS IF NOT EXISTS
-// =======================
-
-function initClass(cls){
-if(!schoolData[cls]){
-schoolData[cls] = {
-attendance: [],
-marks: [],
-messages: [],
-posts: []
-};
-}
-}
-
-// =======================
-// SAVE ALL DATA
-// =======================
-
-function saveAll(){
-localStorage.setItem("schoolData", JSON.stringify(schoolData));
-}
-
-// =======================
-// GET CLASS DATA
-// =======================
-
-function getClassData(){
-initClass(currentClass);
-return schoolData[currentClass];
-}
-
-// =======================
-// ADD ATTENDANCE
-// =======================
-
-function addAttendanceData(name, value){
-initClass(currentClass);
-
-schoolData[currentClass].attendance.push({
-name: name,
-value: value
-});
-
-saveAll();
-}
-
-// =======================
-// ADD MARKS
-// =======================
-
-function addMarksData(name, value){
-initClass(currentClass);
-
-schoolData[currentClass].marks.push({
-name: name,
-value: value
-});
-
-saveAll();
-}
-
-// =======================
-// ADD MESSAGE
-// =======================
-
-function addMessageData(msg){
-initClass(currentClass);
-
-schoolData[currentClass].messages.push(msg);
-
-saveAll();
-}
-
-// =======================
-// ADD POST
-// =======================
-
-function addPostData(post){
-initClass(currentClass);
-
-schoolData[currentClass].posts.push(post);
-
-saveAll();
-}
-
-// =======================
-// GET TOTALS
-// =======================
-
-function getTotals(){
-
-let cls = getClassData();
-
-return {
-attendance: cls.attendance.length,
-marks: cls.marks.length,
-messages: cls.messages.length,
-posts: cls.posts.length
-};
-}
-
-// =======================
-// CLEAR CLASS DATA (OPTIONAL)
-// =======================
-
-function clearClass(){
-schoolData[currentClass] = {
-attendance: [],
-marks: [],
-messages: [],
-posts: []
-};
-
-saveAll();
-}
+function getUserRole(){
+    return localStorage.getItem("role") || "";
+    }
+    
+    function getUserClass(){
+    return localStorage.getItem("class") || "";
+    }
+    
+    function getUserSection(){
+    return localStorage.getItem("section") || "";
+    }
+    
+    /* Storage Key */
+    function getStorageKey(){
+    
+    let role = getUserRole();
+    
+    if(role === "admin"){
+    return "ALL_DATA";
+    }
+    
+    return "CLASS_" + getUserClass() + "_" + getUserSection();
+    }
+    
+    /* Default Structure */
+    function defaultData(){
+    return {
+    attendance: [],
+    marks: [],
+    posts: [],
+    complaints: []
+    };
+    }
+    
+    /* Get Data */
+    function getData(){
+    
+    let key = getStorageKey();
+    
+    let saved = localStorage.getItem(key);
+    
+    if(saved){
+    return JSON.parse(saved);
+    }
+    
+    return defaultData();
+    }
+    
+    /* Save Data */
+    function saveData(data){
+    
+    let key = getStorageKey();
+    
+    localStorage.setItem(key, JSON.stringify(data));
+    }
+    
+    /* Clear Current Class Data */
+    function clearCurrentData(){
+    
+    let key = getStorageKey();
+    
+    localStorage.removeItem(key);
+    }
+    
+    /* Reset Full System (Admin Use) */
+    function resetSystem(){
+    
+    if(getUserRole() === "admin"){
+    localStorage.clear();
+    }
+    }
+    
+    /* Count Helpers */
+    function totalAttendance(){
+    return getData().attendance.length;
+    }
+    
+    function totalMarks(){
+    return getData().marks.length;
+    }
+    
+    function totalPosts(){
+    return getData().posts.length;
+    }
+    
+    function totalComplaints(){
+    return getData().complaints.length;
+    }

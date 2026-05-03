@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login - EduCore</title>
-
 <link rel="stylesheet" href="style.css">
 </head>
 
@@ -15,55 +14,81 @@
 <div class="login-box">
 
 <h1>EduCore Login</h1>
-<p>Select your role and login</p>
+<p>Select role and enter details</p>
 
-<!-- ROLE SELECT -->
 <select id="role">
 <option value="student">Student</option>
 <option value="parent">Parent</option>
 <option value="teacher">Teacher</option>
-<option value="staff">Staff</option>
+<option value="admin">Admin</option>
 </select>
 
-<!-- INPUTS -->
+<select id="class">
+<option value="">Select Class</option>
+<script>
+for(let i=1;i<=12;i++){
+document.write(`<option value="${i}">${i}</option>`);
+}
+</script>
+</select>
+
+<select id="section">
+<option value="">Section</option>
+<option>A</option>
+<option>B</option>
+<option>C</option>
+<option>D</option>
+</select>
+
 <input type="text" id="username" placeholder="Enter Username">
 <input type="password" id="password" placeholder="Enter Password">
 
-<!-- LOGIN BUTTON -->
 <button onclick="login()">Login</button>
 
-<p style="opacity:0.7;margin-top:10px;">
-Demo Password: <b>1234</b>
+<p style="margin-top:10px;font-size:14px;opacity:.7;">
+Admin Password: admin123
 </p>
 
 </div>
-
 </div>
 
-<!-- LOGIN SCRIPT -->
 <script>
 function login(){
 
-let role = document.getElementById("role").value;
-let username = document.getElementById("username").value.trim();
-let password = document.getElementById("password").value.trim();
+let role=document.getElementById("role").value;
+let cls=document.getElementById("class").value;
+let sec=document.getElementById("section").value;
+let user=document.getElementById("username").value.trim();
+let pass=document.getElementById("password").value.trim();
 
-if(username === ""){
+if(user===""){
 alert("Enter username");
 return;
 }
 
-if(password !== "1234"){
-alert("Wrong password");
+if(role!=="admin" && (cls==="" || sec==="")){
+alert("Select class and section");
 return;
 }
 
-// SAVE LOGIN DATA
-localStorage.setItem("role", role);
-localStorage.setItem("username", username);
+if(role==="admin"){
+if(pass!=="admin123"){
+alert("Wrong admin password");
+return;
+}
+}else{
+if(pass!=="1234"){
+alert("Wrong password");
+return;
+}
+}
 
-// GO TO DASHBOARD
-window.location.href = "dashboard.html";
+localStorage.setItem("role",role);
+localStorage.setItem("username",user);
+localStorage.setItem("class",cls);
+localStorage.setItem("section",sec);
+
+window.location.href="dashboard.html";
 }
 </script>
 

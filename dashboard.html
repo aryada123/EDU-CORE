@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard - EduCore</title>
-
 <link rel="stylesheet" href="style.css">
 </head>
 
@@ -12,66 +11,57 @@
 
 <div class="app">
 
-<!-- SIDEBAR -->
+<!-- Sidebar -->
 <div class="side">
+
 <h2 class="logo">EduCore</h2>
 
-<h3 id="roleText"></h3>
+<div id="userInfo" style="margin-bottom:15px;font-size:14px;opacity:.8;"></div>
 
 <button onclick="showPage('home')">Dashboard</button>
 <button onclick="showPage('attendance')">Attendance</button>
 <button onclick="showPage('marks')">Marks</button>
-<button onclick="showPage('messages')">Messages</button>
 <button onclick="showPage('community')">Community</button>
+<button onclick="showPage('complaints')">Complaints</button>
 <button onclick="logout()">Logout</button>
+
 </div>
 
-<!-- MAIN -->
+<!-- Main -->
 <div class="main">
 
-<!-- CLASS SELECTOR -->
-<div style="margin-bottom:15px;">
-<label>Select Class:</label>
-<select id="classSelect">
-<option value="1-A">Class 1-A</option>
-<option value="1-B">Class 1-B</option>
-<option value="2-A">Class 2-A</option>
-<option value="2-B">Class 2-B</option>
-<option value="3-A">Class 3-A</option>
-<option value="3-B">Class 3-B</option>
-<option value="10-A">Class 10-A</option>
-<option value="12-A">Class 12-A</option>
-</select>
-</div>
-
-<!-- DASHBOARD -->
-<div id="home" class="page active">
-<h1 class="title">Dashboard</h1>
+<!-- HOME -->
+<div class="page active" id="home">
+<h1>Dashboard</h1>
 
 <div class="cards">
-<div class="card">
-<h3>Total Students</h3>
-<p id="studentsCount">0</p>
-</div>
 
 <div class="card">
-<h3>Messages</h3>
-<p id="messageCount">0</p>
+<h3>Students</h3>
+<p id="studentCount">0</p>
 </div>
 
 <div class="card">
 <h3>Posts</h3>
 <p id="postCount">0</p>
 </div>
+
+<div class="card">
+<h3>Complaints</h3>
+<p id="complaintCount">0</p>
+</div>
+
 </div>
 </div>
 
 <!-- ATTENDANCE -->
-<div id="attendance" class="page">
-<h1 class="title">Attendance</h1>
+<div class="page" id="attendance">
+<h1>Attendance</h1>
 
-<input id="studentName" placeholder="Student Name">
-<input id="studentAttendance" placeholder="Attendance %">
+<input type="text" id="searchAttendance" placeholder="Search Student">
+
+<input type="text" id="attName" placeholder="Student Name">
+<input type="text" id="attValue" placeholder="Attendance %">
 
 <button class="action" onclick="saveAttendance()">Save</button>
 
@@ -79,80 +69,51 @@
 </div>
 
 <!-- MARKS -->
-<div id="marks" class="page">
-<h1 class="title">Marks</h1>
+<div class="page" id="marks">
+<h1>Marks</h1>
 
-<input id="markName" placeholder="Student Name">
-<input id="markValue" placeholder="Marks">
+<input type="text" id="searchMarks" placeholder="Search Student">
+
+<select id="examType">
+<option>PT1</option>
+<option>PT2</option>
+<option>PT3</option>
+<option>Half-Yearly</option>
+<option>Final</option>
+</select>
+
+<input type="text" id="markName" placeholder="Student Name">
+<input type="text" id="markValue" placeholder="Marks">
 
 <button class="action" onclick="saveMarks()">Save</button>
 
 <div id="marksList"></div>
 </div>
 
-<!-- MESSAGES -->
-<div id="messages" class="page">
-<h1 class="title">Messages</h1>
-
-<textarea id="msgText" placeholder="Write message"></textarea>
-
-<button class="action" onclick="sendMessage()">Send</button>
-
-<div id="msgList"></div>
-</div>
-
 <!-- COMMUNITY -->
-<div id="community" class="page">
-<h1 class="title">Community</h1>
+<div class="page" id="community">
+<h1>Community</h1>
 
-<textarea id="postText" placeholder="Write post"></textarea>
-
+<textarea id="postText" placeholder="Write message"></textarea>
 <button class="action" onclick="addPost()">Post</button>
 
 <div id="postList"></div>
+</div>
+
+<!-- COMPLAINTS -->
+<div class="page" id="complaints">
+<h1>Complaints</h1>
+
+<textarea id="complaintText" placeholder="Parents can write complaint"></textarea>
+<button class="action" onclick="saveComplaint()">Submit</button>
+
+<div id="complaintList"></div>
 </div>
 
 </div>
 </div>
 
 <script src="script.js"></script>
-
-<script>
-// ROLE SYSTEM
-let role = localStorage.getItem("role");
-let currentClass = "1-A";
-
-// show role
-document.getElementById("roleText").innerText =
-"Role: " + role;
-
-// class change
-document.getElementById("classSelect").addEventListener("change",(e)=>{
-currentClass = e.target.value;
-});
-
-// LOCK SYSTEM (view only)
-function lockUI(){
-if(role === "student" || role === "parent"){
-document.querySelectorAll("button.action").forEach(btn=>{
-btn.style.display = "none";
-});
-}
-}
-lockUI();
-
-function showPage(id){
-document.querySelectorAll(".page").forEach(p=>{
-p.classList.remove("active");
-});
-document.getElementById(id).classList.add("active");
-}
-
-function logout(){
-localStorage.clear();
-window.location.href = "login.html";
-}
-</script>
 
 </body>
 </html>
